@@ -1,8 +1,6 @@
 package com.example.filter;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -13,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -63,11 +60,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 .getBody();
 
             String username = claims.getSubject();	
-			List<String> authorities = (List<String>) claims.get("authorities");			
             if (username != null && !username.isEmpty()) {
-            	return new UsernamePasswordAuthenticationToken(username, null, 
-                	authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
-            }
+            	return new UsernamePasswordAuthenticationToken(username, null, null); }
         } 
 
         return null;

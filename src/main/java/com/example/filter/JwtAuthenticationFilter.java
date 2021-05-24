@@ -1,8 +1,12 @@
 package com.example.filter;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +16,7 @@ import org.joda.time.DateTime;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -61,11 +66,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	private String buildJWTToken(Authentication authentication) {
         DateTime now = new DateTime();
         
+        //TODO: Add authorities
         return Jwts.builder()
             .setHeaderParam("typ", "JWT")
             .setId(UUID.randomUUID().toString().replace("-", ""))
             .setSubject(((LdapUserDetailsImpl)authentication.getPrincipal()).getUsername())
-            .claim("authorities", "authorities") //To add accordingly
             .setIssuedAt(now.toDate()) //issuedAt expects a Date, so need to use joda
             .setExpiration(now.plusMinutes(jwtTimeToLiveInMinutes).toDate())
             .signWith(SignatureAlgorithm.HS512, secret) //base64EncodedSecretKey

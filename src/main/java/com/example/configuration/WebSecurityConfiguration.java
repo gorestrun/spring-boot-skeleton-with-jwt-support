@@ -45,8 +45,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         	.and()
         	.csrf().disable() //We recommend disabling CSRF protection completely only if you are creating a service that is used by non-browser clients.
             .authorizeRequests()
-            	.requestMatchers(EndpointRequest.toAnyEndpoint()).hasAuthority("authority")
-            	.antMatchers("/api/admin/caches/**").hasAuthority("authority")
             	.antMatchers("/api/health").authenticated()
                 .anyRequest().denyAll()
             .and()
