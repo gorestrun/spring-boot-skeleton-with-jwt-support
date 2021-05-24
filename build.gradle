@@ -1,0 +1,125 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.0'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	
+	id 'eclipse'
+    id 'java-library'
+    id 'war'
+}
+
+group = 'com.example'
+version = '1.0.0-SNAPSHOT'
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
+repositories {
+	mavenCentral()
+}
+
+sourceSets {
+    test {
+        resources {
+            srcDir 'src/test/resources/sql'
+        }
+    }
+    
+    integrationTest { //declare new sourceSet before dependencies
+        java {
+            compileClasspath += sourceSets.main.output //production classes and resources
+            runtimeClasspath += sourceSets.main.output
+        }
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom implementation //production dependencies
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+tasks.register('integrationTest', Test) {
+    useJUnitPlatform()
+    failFast = true
+    maxHeapSize = '2G'
+    description = 'To run integration tests.'
+    group = 'verification'
+    
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    shouldRunAfter test
+}
+
+check.dependsOn integrationTest
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation fileTree(dir: 'libs', include: '*.jar')
+    implementation platform('org.testcontainers:testcontainers-bom:1.15.2') //Avoid specifying the version of each testcontainers dependency
+    
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc' //Automatically gets a dependency to HikariCP
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.ldap:spring-ldap-core' //To connect to ldap server + declare URL of server in application.properties
+    implementation 'org.springframework.security:spring-security-ldap'
+    
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'javax.cache:cache-api' //Allows to use caching libraries that implement JSR-107
+    implementation('joda-time:joda-time:2.10.10') {
+        because 'Jwts setIssuedAt, expects a Date'
+    }
+    implementation 'org.hibernate:hibernate-jcache' //generic integration for all JCache compatible cache implementations
+    implementation 'org.ehcache:ehcache' //Ehcache 3
+    implementation 'org.liquibase:liquibase-core:4.3.5'
+    implementation 'org.modelmapper:modelmapper:2.4.3'
+    
+    //The following 3 lines are required, to prevent jaxb & "NoClassDefFoundError: javax/el/ELManager" issues in WAS
+    providedRuntime 'javax.xml.bind:jaxb-api'
+    providedRuntime 'org.apache.tomcat.embed:tomcat-embed-core'
+    providedRuntime 'org.apache.tomcat.embed:tomcat-embed-websocket'
+  
+    integrationTestImplementation "com.unboundid:unboundid-ldapsdk"
+    integrationTestImplementation 'org.awaitility:awaitility:4.0.3'
+    integrationTestImplementation "org.testcontainers:testcontainers"
+    integrationTestImplementation "org.testcontainers:junit-jupiter"
+    integrationTestImplementation "org.testcontainers:kafka"
+    integrationTestImplementation 'org.springframework.kafka:spring-kafka-test'
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation "org.testcontainers:junit-jupiter"
+	
+	testRuntimeOnly 'com.h2database:h2'
+}
+
+test {
+    useJUnitPlatform()
+    
+    failFast = true
+    maxHeapSize = '2G'
+    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+eclipse {
+    classpath {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
