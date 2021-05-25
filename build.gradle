@@ -26,7 +26,7 @@ sourceSets {
         }
     }
     
-    integrationTest { //declare new sourceSet before dependencies
+    integrationtest { //declare new sourceSet before dependencies
         java {
             compileClasspath += sourceSets.main.output //production classes and resources
             runtimeClasspath += sourceSets.main.output
@@ -35,24 +35,24 @@ sourceSets {
 }
 
 configurations {
-    integrationTestImplementation.extendsFrom implementation //production dependencies
-    integrationTestImplementation.extendsFrom testImplementation
-    integrationTestRuntimeOnly.extendsFrom runtimeOnly
+    integrationtestImplementation.extendsFrom implementation //production dependencies
+    integrationtestImplementation.extendsFrom testImplementation
+    integrationtestRuntimeOnly.extendsFrom runtimeOnly
 }
 
-tasks.register('integrationTest', Test) {
+tasks.register('integrationtest', Test) {
     useJUnitPlatform()
     failFast = true
     maxHeapSize = '2G'
     description = 'To run integration tests.'
     group = 'verification'
     
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
+    testClassesDirs = sourceSets.integrationtest.output.classesDirs
+    classpath = sourceSets.integrationtest.runtimeClasspath
     shouldRunAfter test
 }
 
-check.dependsOn integrationTest
+check.dependsOn integrationtest
 
 dependencies {
     compileOnly 'org.projectlombok:lombok'
@@ -89,12 +89,12 @@ dependencies {
     providedRuntime 'org.apache.tomcat.embed:tomcat-embed-core'
     providedRuntime 'org.apache.tomcat.embed:tomcat-embed-websocket'
   
-    integrationTestImplementation "com.unboundid:unboundid-ldapsdk"
-    integrationTestImplementation 'org.awaitility:awaitility:4.0.3'
-    integrationTestImplementation "org.testcontainers:testcontainers"
-    integrationTestImplementation "org.testcontainers:junit-jupiter"
-    integrationTestImplementation "org.testcontainers:kafka"
-    integrationTestImplementation 'org.springframework.kafka:spring-kafka-test'
+    integrationtestImplementation "com.unboundid:unboundid-ldapsdk"
+    integrationtestImplementation 'org.awaitility:awaitility:4.0.3'
+    integrationtestImplementation "org.testcontainers:testcontainers"
+    integrationtestImplementation "org.testcontainers:junit-jupiter"
+    integrationtestImplementation "org.testcontainers:kafka"
+    integrationtestImplementation 'org.springframework.kafka:spring-kafka-test'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

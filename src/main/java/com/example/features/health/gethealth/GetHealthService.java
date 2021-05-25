@@ -5,7 +5,7 @@ import org.springframework.boot.actuate.jdbc.DataSourceHealthIndicator;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetHealthService {
+class GetHealthService {
 
     private final DataSourceHealthIndicator dataSourceHealthIndicator;
     
