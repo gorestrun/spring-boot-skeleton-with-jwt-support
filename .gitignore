@@ -4,3 +4,15 @@
 .settings 
 bin/ 
 logs/ 
+/.idea/.gitignore
+/.idea/gradle.xml
+/.idea/misc.xml
+/.idea/sonarlint/issuestore/8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+/.idea/sonarlint/issuestore/9/6/96d16975919ab21d64887af79ffbdd6d90220655
+/.idea/sonarlint/issuestore/f/8/f8f92771ba70efaf6e68f45cfce458e021d8cf68
+/.idea/sonarlint/issuestore/index.pb
+/.idea/sonarlint/securityhotspotstore/8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+/.idea/sonarlint/securityhotspotstore/9/6/96d16975919ab21d64887af79ffbdd6d90220655
+/.idea/sonarlint/securityhotspotstore/f/8/f8f92771ba70efaf6e68f45cfce458e021d8cf68
+/.idea/sonarlint/securityhotspotstore/index.pb
+/.idea/vcs.xml

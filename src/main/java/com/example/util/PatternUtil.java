@@ -10,6 +10,11 @@ public final class PatternUtil {
     }
     
     public static boolean isAlphaNumeric(String s) {
+
+        if(s == null || s.isEmpty()){
+            return false;
+        }
+
         return ALPHA_NUMERIC.matcher(s).matches();
     }
 }
